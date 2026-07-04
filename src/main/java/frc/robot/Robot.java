@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -37,6 +36,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+
     timer1.reset();
     timer1.start();
     motor1.set(1);
@@ -46,10 +46,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
+
     if(timer1.get() >= 3){
-    int newSpeed = (motor1.get() > 0) ? -1 : 1;
-    motor1.set(newSpeed);
-    motor2.set(newSpeed);
+    
+    motor1.set(motor1.get()*-1);
+    motor2.set(motor2.get()*-1);
     timer1.restart();
     }
 
@@ -60,11 +61,19 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    motor1.set(controller.getAButton() ? 1 : 0);
+
+    if(controller.getAButton()) {
+      motor1.set(1);
+    }
+    else {
+      motor1.set(0);
+    }
+
     if(controller.getBButtonPressed()){
-      motor2.set((motor2.get() == 0) ? 1 : 0);
+      motor2.set(1 - Math.ceil(motor2.get()));
       timer1.restart();
     }
+    
     if(timer1.get() >= 10){
       motor2.set(0);
     }
